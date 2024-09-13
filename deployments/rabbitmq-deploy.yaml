@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq-deployment
+  namespace: helpme
+spec:
+  selector:
+    matchLabels:
+      app: rabbitmq
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:3-management   # RabbitMQ with management plugin for web UI
+        ports:
+        - containerPort: 5672          # Default RabbitMQ port
+        - containerPort: 15672         # Management web UI port
+        env:
+        - name: RABBITMQ_DEFAULT_USER  
+          valueFrom:
+            secretKeyRef:
+              name: helpme-rabbitmq-secrets
+              key: RABBITMQ_DEFAULT_USER
+        - name: RABBITMQ_DEFAULT_PASS  
+          valueFrom:
+            secretKeyRef:
+              name: helpme-rabbitmq-secrets
+              key: RABBITMQ_DEFAULT_PASS
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "500m"

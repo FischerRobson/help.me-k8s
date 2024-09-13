@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helpme-mail-ms-deployment
+  namespace: helpme
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: helpme-mail-ms
+  template:
+    metadata:
+      labels:
+        app: helpme-mail-ms
+    spec:
+      containers:
+      - name: helpme-mail-ms
+        image: fischernz/helpme-mail-ms:1.0.0-SNAPSHOT
+        ports:
+        - containerPort: 8080
+        env:
+        - name: EMAIL_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: helpme-mail-ms-secrets
+              key: EMAIL_USERNAME
+        - name: EMAIL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: helpme-mail-ms-secrets
+              key: EMAIL_PASSWORD
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"

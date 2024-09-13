@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helpme-upload-ms-deployment
+  namespace: helpme
+spec:
+  selector:
+    matchLabels:
+      app: helpme-upload-ms
+  template:
+    metadata:
+      labels:
+        app: helpme-upload-ms
+    spec:
+      containers:
+      - name: helpme-upload-ms
+        image: fischernz/helpme-upload-ms:latest
+        ports:
+        - containerPort: 8081
+        env:
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: helpme-jwt-secrets
+              key: JWT_SECRET
+        - name: S3_BUCKET_NAME
+          valueFrom:
+            secretKeyRef:
+              name: helpme-upload-ms-secrets
+              key: S3_BUCKET_NAME
+        - name: ENABLE_AWS_UPLOAD
+          valueFrom:
+            secretKeyRef:
+              name: helpme-upload-ms-secrets
+              key: ENABLE_AWS_UPLOAD
+        - name: APP_ENV
+          valueFrom:
+            secretKeyRef:
+              name: helpme-upload-ms-secrets
+              key: APP_ENV
+        - name: UPLOAD_FILE_QUEUE
+          valueFrom:
+            secretKeyRef:
+              name: helpme-rabbitmq-secrets
+              key: RABBITMQ_UPLOAD_QUEUE
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: helpme-aws-secrets
+              key: AWS_ACCESS_KEY_ID
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: helpme-aws-secrets
+              key: AWS_SECRET_ACCESS_KEY
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
