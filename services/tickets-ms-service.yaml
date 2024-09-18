@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: helpme-tickets-ms-service
+  namespace: helpme
+  labels:
+    app: helpme-tickets-ms
+spec:
+  type: LoadBalancer
+  selector:
+    app: helpme-tickets-ms
+  ports:
+    - protocol: TCP
+      port: 3333
+      targetPort: 3333

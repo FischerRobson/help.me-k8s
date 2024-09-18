@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helpme-tickets-ms-deployment
+  namespace: helpme
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: helpme-tickets-ms
+  template:
+    metadata:
+      labels:
+        app: helpme-tickets-ms
+    spec:
+      containers:
+      - name: helpme-tickets-ms
+        image: fischernz/helpme-tickets-ms:1.0.1
+        ports:
+        - containerPort: 3333
+        env:
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: helpme-jwt-secrets
+              key: JWT_SECRET
+        - name: NODE_ENV
+          valueFrom:
+            secretKeyRef:
+              name: helpme-tickets-ms-secrets
+              key: NODE_ENV
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: helpme-tickets-ms-secrets
+              key: DATABASE_URL
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"

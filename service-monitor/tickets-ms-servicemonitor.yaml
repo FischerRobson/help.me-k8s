@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: tickets-ms-monitor
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: helpme-tickets-ms-service  # This should match the labels on your service
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
+  namespaceSelector:
+    matchNames:
+      - helpme  # The namespace where your tickets-ms service is running

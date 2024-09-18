@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: helpme-upload-ms
-        image: fischernz/helpme-upload-ms:latest
+        image: fischernz/helpme-upload-ms:1.0.0
         ports:
         - containerPort: 8081
         env:
@@ -43,6 +43,11 @@ spec:
             secretKeyRef:
               name: helpme-rabbitmq-secrets
               key: RABBITMQ_UPLOAD_QUEUE
+        - name: RABBITMQ_HOST
+          valueFrom:
+            secretKeyRef:
+              name: helpme-rabbitmq-secrets
+              key: RABBITMQ_HOST
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:

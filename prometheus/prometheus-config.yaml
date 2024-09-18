@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: helpme  # Use the helpme namespace
+  labels:
+    app: prometheus
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+
+    scrape_configs:
+      # Default Kubernetes service discovery
+      - job_name: 'kubernetes'
+        kubernetes_sd_configs:
+        - role: endpoints
+
+      # Scrape configuration for tickets microservice
+      - job_name: 'tickets-ms'
+        scrape_interval: 5s
+        metrics_path: /metrics
+        static_configs:
+          - targets: ['helpme-tickets-ms-service:3333']  # Ensure service name and port are correct for your namespace
